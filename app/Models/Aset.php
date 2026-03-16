@@ -65,4 +65,46 @@ class Aset extends Model
 
         return $prefix . '.' . str_pad($nextSeq, 4, '0', STR_PAD_LEFT);
     }
+
+    /**
+     * Generate a unique inventory serial number based on classification, type, quantity, month, and year.
+     */
+    public static function generateNomorSeriInventaris(int $jenisBarangId, int $jumlah): string
+    {
+        $jenisBarang = MasterJenisBarang::with('klasifikasi')->findOrFail($jenisBarangId);
+
+        $klasifikasiCode = str_pad($jenisBarang->klasifikasi_id, 2, '0', STR_PAD_LEFT);
+        $jenisCode = str_pad($jenisBarang->id, 2, '0', STR_PAD_LEFT);
+        $jumlahCode = str_pad($jumlah, 2, '0', STR_PAD_LEFT);
+        
+        $bulanCode = date('m');
+        $tahunCode = date('Y');
+
+        $prefix = "{$klasifikasiCode}.{$jenisCode}.{$jumlahCode}";
+
+        // Format is: klasifikasi.jenis.jumlah.urut.bulan.tahun
+        $lastAset = self::where('nomor_seri_inventaris', 'like', "{$prefix}.%")
+            ->orderByDesc('id')
+            ->get();
+
+        $nextSeq = 1;
+        if ($lastAset->isNotEmpty()) {
+            $maxSeq = 0;
+            foreach ($lastAset as $aset) {
+                // nomer urut ada di posisi ke-4 -> index 3
+                $parts = explode('.', $aset->nomor_seri_inventaris);
+                if (count($parts) >= 6) {
+                    $seq = (int) $parts[3];
+                    if ($seq > $maxSeq) {
+                        $maxSeq = $seq;
+                    }
+                }
+            }
+            $nextSeq = $maxSeq + 1;
+        }
+
+        $urutCode = str_pad($nextSeq, 4, '0', STR_PAD_LEFT);
+
+        return "{$prefix}.{$urutCode}.{$bulanCode}.{$tahunCode}";
+    }
 }

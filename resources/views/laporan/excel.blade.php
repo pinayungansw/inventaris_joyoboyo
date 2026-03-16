@@ -21,7 +21,7 @@
         @foreach($aset as $i => $a)
             <tr>
                 <td style="border: 1px solid #000; text-align: center;">{{ $i + 1 }}</td>
-                <td style="border: 1px solid #000;">{{ $a->nomor_seri_inventaris ?? $a->kode_aset }}</td>
+                <td style="border: 1px solid #000;">{{ $a->nomor_seri_inventaris }}</td>
                 <td style="border: 1px solid #000;">{{ $a->jenisBarang?->klasifikasi?->nama_klasifikasi ?? '-' }}</td>
                 <td style="border: 1px solid #000;">{{ $a->jenisBarang?->nama_jenis ?? '-' }}</td>
                 <td style="border: 1px solid #000;">{{ $a->ruangan?->lokasi?->nama_lokasi ?? '-' }}</td>

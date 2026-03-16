@@ -15,6 +15,34 @@
             </a>
         </div>
 
+        {{-- Filter Section --}}
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <form method="GET" action="{{ route('mutasi.index') }}">
+                <div class="flex flex-wrap items-end gap-4">
+                    <div class="space-y-1.5 flex-1 min-w-[200px]">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Dari Tanggal</label>
+                        <input type="date" name="start_date" value="{{ request('start_date') }}"
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1C7791]/20 transition-all shadow-inner">
+                    </div>
+                    <div class="space-y-1.5 flex-1 min-w-[200px]">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Sampai Tanggal</label>
+                        <input type="date" name="end_date" value="{{ request('end_date') }}"
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1C7791]/20 transition-all shadow-inner">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit"
+                            class="rounded-xl bg-[#1C7791] px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:brightness-110 transition active:scale-95">
+                            Filter
+                        </button>
+                        <a href="{{ route('mutasi.index') }}"
+                            class="rounded-xl bg-slate-100 px-6 py-2.5 text-sm font-bold text-slate-500 hover:bg-slate-200 transition border border-slate-200/50 text-center">
+                            Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
         <div class="rounded-2xl bg-white shadow-sm border border-slate-200 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">

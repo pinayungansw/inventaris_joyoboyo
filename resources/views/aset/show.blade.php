@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Detail Aset — ' . $aset->kode_aset)
+@section('title', 'Detail Aset — ' . ($aset->nomor_seri_inventaris ?? $aset->id))
 @section('page-title', 'Detail Aset')
 
 @section('content')
@@ -92,10 +92,7 @@
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Jumlah</p>
                     <p class="mt-1 text-sm font-bold text-slate-700">{{ $aset->jumlah }}</p>
                 </div>
-                <div>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kode Sistem</p>
-                    <p class="mt-1 text-sm font-medium text-slate-700">{{ $aset->kode_aset }}</p>
-                </div>
+
                 <div>
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Keterangan</p>
                     <p class="mt-1 text-sm text-slate-600 font-medium">{{ $aset->keterangan ?? '-' }}</p>

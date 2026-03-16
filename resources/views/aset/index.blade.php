@@ -12,7 +12,7 @@
                         <label
                             class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Pencarian</label>
                         <input type="text" name="search" value="{{ request('search') }}"
-                            placeholder="Kode, merk, spesifikasi..."
+                            placeholder="Nomor seri, merk, spesifikasi..."
                             class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1C7791]/20 transition-all shadow-inner placeholder:text-slate-300">
                     </div>
                     <div class="space-y-1.5">
@@ -223,5 +223,7 @@
         <div class="mt-6">
             {{ $aset->links() }}
         </div>
+    </div>
+
     </div>
 @endsection

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>ERD Diagram - Inventaris Perumda</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            padding: 40px;
+            background: white;
+            border: 1px solid #eee;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 18pt;
+            margin-bottom: 20px;
+            color: #333;
+        }
+    </style>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            themeVariables: {
+                fontFamily: 'Arial',
+                lineColor: '#333',
+                primaryColor: '#ffffff',
+                primaryTextColor: '#000000',
+                primaryBorderColor: '#333',
+                tertiaryColor: '#f4f4f4'
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div id="diagram-container" class="container">
+        <h1>Entity Relationship Diagram (ERD)</h1>
+        <pre class="mermaid">
+erDiagram
+    MASTER_LOKASI ||--o{ MASTER_RUANGAN : "has"
+    MASTER_KLASIFIKASI ||--o{ MASTER_JENIS_BARANG : "has"
+    MASTER_RUANGAN ||--o{ ASET : "contains"
+    MASTER_JENIS_BARANG ||--o{ ASET : "categorizes"
+    ASET ||--o{ MUTASI_ASET : "recorded_in"
+    MASTER_RUANGAN ||--o{ MUTASI_ASET : "origin_destination"
+
+    MASTER_LOKASI {
+        bigint id PK "Primary Key"
+        varchar nama_lokasi "Nama Lokasi/Kantor"
+    }
+
+    MASTER_RUANGAN {
+        bigint id PK "Primary Key"
+        bigint lokasi_id FK "Foreign Key ke Master Lokasi"
+        varchar kode_ruangan "Kode Unik Ruangan"
+        varchar nama_ruangan "Nama Ruangan"
+    }
+
+    MASTER_KLASIFIKASI {
+        bigint id PK "Primary Key"
+        varchar nama_klasifikasi "Kelompok Klasifikasi"
+    }
+
+    MASTER_JENIS_BARANG {
+        bigint id PK "Primary Key"
+        bigint klasifikasi_id FK "Foreign Key ke Master Klasifikasi"
+        varchar kode_jenis "Kode Unik Jenis"
+        varchar nama_jenis "Nama Jenis Barang"
+    }
+
+    ASET {
+        bigint id PK "Primary Key"
+        varchar kode_aset UK "Unique Key/Barcode"
+        bigint jenis_barang_id FK "Foreign Key ke Master Jenis"
+        bigint ruangan_id FK "Foreign Key ke Master Ruangan"
+        varchar merk "Merk Barang"
+        text spesifikasi "Detail Spesifikasi"
+        varchar tahun_pembelian "Tahun Pengadaan"
+        enum kondisi "Status: Baik/Rusak/Layak"
+        integer jumlah "Kuantitas"
+        varchar nomor_seri_inventaris "No Seri Fisik"
+        text keterangan "Catatan Tambahan"
+    }
+
+    MUTASI_ASET {
+        bigint id PK "Primary Key"
+        bigint aset_id FK "Foreign Key ke Aset"
+        bigint dari_ruangan_id FK "Foreign Key (Asal)"
+        bigint ke_ruangan_id FK "Foreign Key (Tujuan)"
+        date tanggal_mutasi "Waktu Mutasi"
+        text keterangan "Alasan Mutasi"
+    }
+
+    USERS {
+        bigint id PK "Primary Key"
+        varchar name "Nama Lengkap"
+        varchar email UK "Email Login"
+        varchar password "Hash Password"
+    }
+        </pre>
+    </div>
+</body>
+
+</html>

@@ -5,15 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Aset;
 use App\Models\MutasiAset;
 use App\Models\MasterRuangan;
+use App\Models\MasterLokasi;
 use Illuminate\Http\Request;
 
 class MutasiAsetController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $mutasi = MutasiAset::with(['aset.jenisBarang', 'dariRuangan.lokasi', 'keRuangan.lokasi'])
-            ->latest('tanggal_mutasi')
-            ->paginate(20);
+        $query = MutasiAset::with(['aset.jenisBarang', 'dariRuangan.lokasi', 'keRuangan.lokasi']);
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('tanggal_mutasi', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('tanggal_mutasi', '<=', $request->end_date);
+        }
+
+        $mutasi = $query->latest('tanggal_mutasi')->paginate(20)->withQueryString();
 
         return view('mutasi.index', compact('mutasi'));
     }
@@ -27,8 +36,30 @@ class MutasiAsetController extends Controller
 
         $allAset = Aset::with(['jenisBarang', 'ruangan.lokasi'])->get();
         $ruangan = MasterRuangan::with('lokasi')->get();
+        $lokasi = MasterLokasi::orderBy('nama_lokasi')->get();
 
-        return view('mutasi.form', compact('aset', 'allAset', 'ruangan'));
+        // Data siap pakai untuk JS (hindari arrow function di Blade @json)
+        $asetData = $allAset->map(function ($a) {
+            return [
+                'id' => $a->id,
+                'label' => $a->jenisBarang?->nama_jenis ?? 'Aset',
+                'kode' => $a->nomor_seri_inventaris ?? '-',
+                'ruangan_id' => $a->ruangan_id,
+                'ruangan' => $a->ruangan?->nama_ruangan ?? '-',
+                'lokasi_id' => $a->ruangan?->lokasi?->id,
+                'lokasi' => $a->ruangan?->lokasi?->nama_lokasi ?? '-',
+            ];
+        })->values();
+
+        $ruanganData = $ruangan->map(function ($r) {
+            return [
+                'id' => $r->id,
+                'nama' => $r->nama_ruangan,
+                'lokasi_id' => $r->lokasi_id,
+            ];
+        })->values();
+
+        return view('mutasi.form', compact('aset', 'allAset', 'ruangan', 'lokasi', 'asetData', 'ruanganData'));
     }
 
     public function store(Request $request)

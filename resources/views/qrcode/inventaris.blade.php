@@ -106,7 +106,7 @@
                                             <td class="px-6 py-4">
                                                 <p
                                                     class="font-mono text-[9px] font-black text-slate-400 uppercase tracking-tighter mb-1 opacity-70 group-hover:opacity-100 transition-opacity">
-                                                    {{ $a->nomor_seri_inventaris ?? $a->kode_aset }}
+                                                    {{ $a->nomor_seri_inventaris }}
                                                 </p>
                                                 <p class="font-black text-slate-800 leading-tight text-sm tracking-tight">{{
                             $a->jenisBarang?->nama_jenis }}

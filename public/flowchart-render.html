@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Flowchart Sistem - Inventaris Perumda</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            padding: 40px;
+            background: white;
+            border: 1px solid #eee;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            max-width: 90%;
+        }
+
+        h1 {
+            font-size: 18pt;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .legend {
+            margin-top: 20px;
+            font-size: 10pt;
+            color: #666;
+        }
+    </style>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                fontFamily: 'Arial',
+                lineColor: '#333',
+                primaryColor: '#ffffff',
+                primaryTextColor: '#000000',
+                primaryBorderColor: '#333',
+                edgeLabelBackground: '#ffffff',
+                tertiaryColor: '#f9f9f9'
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div id="diagram-container" class="container">
+        <h1>Alur Kerja Sistem (Flowchart)</h1>
+        <pre class="mermaid">
+graph TD
+    %% 1. Autentikasi Admin
+    Start((Mulai)) --> Public[Halaman Depan / Scan QR]
+    Public --> Login{Admin Login?}
+    Login -- Ya --> Auth[Verifikasi Akun]
+    Auth --> Dashboard[Dashboard Admin]
+    Login -- Tidak --> QRScan[Scan QR Kode Ruangan]
+
+    %% 2. Alur Pengelolaan Aset
+    Dashboard --> Menu{Pilih Menu}
+    
+    Menu --> Master[Master Data]
+    Master --> CRUD_Master[Kelola Lokasi/Ruangan/Klasifikasi]
+    CRUD_Master --> Dashboard
+
+    Menu --> Aset[Inventaris Aset]
+    Aset --> CRUD_Aset[Tambah/Edit/Hapus Aset]
+    CRUD_Aset --> GenQR[Generate QR Code]
+    GenQR --> Dashboard
+
+    Menu --> Mutasi[Mutasi Aset]
+    Mutasi --> SelectAset[Pilih Aset & Ruangan Tujuan]
+    SelectAset --> SaveMutasi[Simpan Histori Mutasi]
+    SaveMutasi --> UpdateLoc[Update Lokasi Aset Otomatis]
+    UpdateLoc --> Dashboard
+
+    Menu --> Report[Laporan]
+    Report --> Export[Export PDF / Excel]
+    Export --> Dashboard
+
+    %% 3. Alur QR Scan (Public User)
+    QRScan --> ViewRoom[Tampil Daftar Aset Ruangan]
+    ViewRoom --> Detail[Lihat Detail Aset]
+    Detail --> End((Selesai))
+
+    %% Styling
+    classDef process fill:#fff,stroke:#333,stroke-width:2px;
+    classDef decision fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef startend fill:#000,color:#fff,stroke-width:2px;
+
+    class Start,End startend;
+    class Dashboard,Public,Auth,CRUD_Master,CRUD_Aset,GenQR,SelectAset,SaveMutasi,UpdateLoc,Export,ViewRoom,Detail process;
+    class Login,Menu decision;
+        </pre>
+        <div class="legend">
+            * Diagram dibuat dengan standar ISO Flowchart menggunakan Mermaid.js
+        </div>
+    </div>
+</body>
+
+</html>

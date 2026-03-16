@@ -87,6 +87,13 @@ class AsetController extends Controller
             $validated['tahun_pembelian']
         );
 
+        if (empty($validated['nomor_seri_inventaris'])) {
+            $validated['nomor_seri_inventaris'] = Aset::generateNomorSeriInventaris(
+                $validated['jenis_barang_id'],
+                $validated['jumlah']
+            );
+        }
+
         Aset::create($validated);
 
         return redirect()->route('aset.index')->with('success', 'Aset berhasil ditambahkan dengan nomor seri inventaris: ' . ($validated['nomor_seri_inventaris'] ?? $validated['kode_aset']));
