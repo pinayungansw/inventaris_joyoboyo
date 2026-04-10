@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Licensed to Pinayungan Sadewa Buwana
+ * All rights reserved.
+ */
+
 return [
 
     /*

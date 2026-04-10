@@ -1,3 +1,7 @@
+{{-- 
+    Licensed to Pinayungan Sadewa Buwana
+    All rights reserved.
+--}}
 <!DOCTYPE html>
 <html lang="id">
 

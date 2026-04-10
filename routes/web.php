@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Licensed to Pinayungan Sadewa Buwana
+ * All rights reserved.
+ */
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
