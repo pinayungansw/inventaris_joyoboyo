@@ -22,6 +22,40 @@ class Aset extends Model
         'keterangan',
     ];
 
+    /**
+     * Boot method to sanitize fields before saving.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($aset) {
+            // Bersihkan _x000D_ dan karakter carriage return dari nomor_seri_inventaris
+            if ($aset->nomor_seri_inventaris) {
+                $aset->nomor_seri_inventaris = self::sanitizeString($aset->nomor_seri_inventaris);
+            }
+            // Bersihkan juga kode_aset untuk jaga-jaga
+            if ($aset->kode_aset) {
+                $aset->kode_aset = self::sanitizeString($aset->kode_aset);
+            }
+        });
+    }
+
+    /**
+     * Membersihkan string dari artefak Excel/Windows (_x000D_, carriage return, dll.)
+     */
+    public static function sanitizeString(string $value): string
+    {
+        // Hapus _x000D_ (artefak dari Excel XML)
+        $value = str_replace('_x000D_', '', $value);
+        // Hapus karakter carriage return (\r)
+        $value = str_replace("\r", '', $value);
+        // Hapus karakter newline (\n) yang tidak seharusnya ada
+        $value = str_replace("\n", '', $value);
+        // Trim spasi di awal dan akhir
+        return trim($value);
+    }
+
     public function jenisBarang(): BelongsTo
     {
         return $this->belongsTo(MasterJenisBarang::class , 'jenis_barang_id');
