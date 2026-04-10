@@ -21,6 +21,7 @@
                 <thead class="bg-slate-50 text-slate-500">
                     <tr>
 
+                        <th class="px-6 py-3 text-left font-medium w-24">Kode</th>
                         <th class="px-6 py-3 text-left font-medium">Nama Lokasi</th>
                         <th class="px-6 py-3 text-center font-medium">Jumlah Ruangan</th>
                         <th class="px-6 py-3 text-center font-medium w-40">Aksi</th>
@@ -30,6 +31,7 @@
                     @forelse($lokasi as $i => $l)
                     <tr class="hover:bg-slate-50/50">
 
+                        <td class="px-6 py-3 font-medium text-slate-500">{{ $l->kode_lokasi ?? '-' }}</td>
                         <td class="px-6 py-3 font-medium text-slate-700">{{ $l->nama_lokasi }}</td>
                         <td class="px-6 py-3 text-center">
                             <span
@@ -62,7 +64,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="px-6 py-8 text-center text-slate-400">Belum ada data lokasi.</td>
+                        <td colspan="5" class="px-6 py-8 text-center text-slate-400">Belum ada data lokasi.</td>
                     </tr>
                     @endforelse
                 </tbody>

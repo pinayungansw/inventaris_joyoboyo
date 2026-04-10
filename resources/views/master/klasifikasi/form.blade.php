@@ -12,6 +12,15 @@
             @if(isset($klasifikasi)) @method('PUT') @endif
             <div class="space-y-6">
                 <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Kode
+                        Klasifikasi</label>
+                    <input type="text" name="kode_klasifikasi"
+                        value="{{ old('kode_klasifikasi', $klasifikasi->kode_klasifikasi ?? '') }}"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1C7791]/20 transition-all shadow-inner placeholder:text-slate-300"
+                        placeholder="cth: 01">
+                </div>
+
+                <div class="space-y-1.5">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Nama
                         Klasifikasi <span class="text-red-500">*</span></label>
                     <input type="text" name="nama_klasifikasi"

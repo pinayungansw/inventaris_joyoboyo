@@ -69,7 +69,7 @@
                             <option value="{{ $k->id }}" {{ old('_klasifikasi_id', isset($aset) ? $aset->
                                 jenisBarang?->klasifikasi_id : '') == $k->id ? 'selected' : '' }}
                                 data-jenis='@json($k->jenisBarang)'>
-                                {{ $k->nama_klasifikasi }}
+                                {{ ($k->kode_klasifikasi ? '[' . $k->kode_klasifikasi . '] ' : '') . $k->nama_klasifikasi }}
                             </option>
                             @endforeach
                         </select>

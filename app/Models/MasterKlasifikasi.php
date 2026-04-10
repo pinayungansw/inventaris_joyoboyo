@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class MasterKlasifikasi extends Model
 {
     protected $table = 'master_klasifikasi';
-    protected $fillable = ['nama_klasifikasi'];
+    protected $fillable = ['kode_klasifikasi', 'nama_klasifikasi'];
 
     public function jenisBarang(): HasMany
     {

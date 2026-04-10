@@ -31,7 +31,7 @@
                             }
                             @endphp
                             <option value="{{ $k->id }}" {{ $selected ? 'selected' : '' }}>
-                                {{ $k->nama_klasifikasi }}
+                                {{ ($k->kode_klasifikasi ? '[' . $k->kode_klasifikasi . '] ' : '') . $k->nama_klasifikasi }}
                             </option>
                             @endforeach
                         </select>

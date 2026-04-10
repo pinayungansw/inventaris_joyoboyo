@@ -11,6 +11,12 @@
             @if(isset($lokasi)) @method('PUT') @endif
 
             <div class="mb-5">
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">Kode Lokasi</label>
+                <input type="text" name="kode_lokasi" value="{{ old('kode_lokasi', $lokasi->kode_lokasi ?? '') }}"
+                    class="w-full form-control transition" placeholder="cth: 01" required>
+            </div>
+
+            <div class="mb-5">
                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Nama Lokasi</label>
                 <input type="text" name="nama_lokasi" value="{{ old('nama_lokasi', $lokasi->nama_lokasi ?? '') }}"
                     class="w-full form-control transition" required>

@@ -101,44 +101,68 @@ class Aset extends Model
     }
 
     /**
-     * Generate a unique inventory serial number based on classification, type, quantity, month, and year.
+     * Generate a unique inventory serial number based on:
+     * KK JJ QQQ L.L SSSS MM YYYY
      */
-    public static function generateNomorSeriInventaris(int $jenisBarangId, int $jumlah): string
+    public static function generateNomorSeriInventaris(int $ruanganId, int $jenisBarangId, int $jumlah): string
     {
+        $ruangan = MasterRuangan::with('lokasi')->findOrFail($ruanganId);
         $jenisBarang = MasterJenisBarang::with('klasifikasi')->findOrFail($jenisBarangId);
 
-        $klasifikasiCode = str_pad($jenisBarang->klasifikasi_id, 2, '0', STR_PAD_LEFT);
-        $jenisCode = str_pad($jenisBarang->id, 2, '0', STR_PAD_LEFT);
-        $jumlahCode = str_pad($jumlah, 2, '0', STR_PAD_LEFT);
+        $klasifikasiCode = str_pad($jenisBarang->klasifikasi->kode_klasifikasi ?? '00', 2, '0', STR_PAD_LEFT);
+        $jenisCode = str_pad($jenisBarang->kode_jenis ?? '00', 2, '0', STR_PAD_LEFT);
+        $jumlahCode = str_pad($jumlah, 3, '0', STR_PAD_LEFT);
+        $lokasiCode = $ruangan->lokasi->kode_lokasi ?? '0';
+        $ruanganCode = $ruangan->kode_ruangan ?? '0';
         
-        $bulanCode = date('m');
-        $tahunCode = date('Y');
+        $month = date('m');
+        $year = date('Y');
 
-        $prefix = "{$klasifikasiCode}.{$jenisCode}.{$jumlahCode}";
+        $prefix = "{$klasifikasiCode} {$jenisCode} {$jumlahCode} {$lokasiCode}.{$ruanganCode}";
 
-        // Format is: klasifikasi.jenis.jumlah.urut.bulan.tahun
-        $lastAset = self::where('nomor_seri_inventaris', 'like', "{$prefix}.%")
+        // Cari urutan SSSS
+        $lastAset = self::where('nomor_seri_inventaris', 'like', "{$prefix} %")
             ->orderByDesc('id')
-            ->get();
+            ->first();
 
         $nextSeq = 1;
-        if ($lastAset->isNotEmpty()) {
-            $maxSeq = 0;
-            foreach ($lastAset as $aset) {
-                // nomer urut ada di posisi ke-4 -> index 3
-                $parts = explode('.', $aset->nomor_seri_inventaris);
-                if (count($parts) >= 6) {
-                    $seq = (int) $parts[3];
-                    if ($seq > $maxSeq) {
-                        $maxSeq = $seq;
-                    }
-                }
+        if ($lastAset) {
+            $parts = explode(' ', $lastAset->nomor_seri_inventaris);
+            if (count($parts) >= 5) {
+                $nextSeq = (int) $parts[4] + 1;
             }
-            $nextSeq = $maxSeq + 1;
         }
 
         $urutCode = str_pad($nextSeq, 4, '0', STR_PAD_LEFT);
 
-        return "{$prefix}.{$urutCode}.{$bulanCode}.{$tahunCode}";
+        return "{$prefix} {$urutCode} {$month} {$year}";
+    }
+
+    /**
+     * Sync/Regenerate nomor seri inventaris based on current master data
+     */
+    public function syncNomorSeriInventaris()
+    {
+        // Ambil data tanpa incrementing sequence (SSSS) jika sudah terlanjur ada? 
+        // User minta "otomatis ganti" tapi urutan biasanya tetap.
+        // Kita pecah dulu nomor yang ada untuk ambil urutan lamanya.
+        $parts = explode(' ', $this->nomor_seri_inventaris);
+        $oldSeq = (count($parts) >= 5) ? $parts[4] : '0001';
+        $oldMonth = (count($parts) >= 6) ? $parts[5] : date('m');
+        $oldYear = (count($parts) >= 7) ? $parts[6] : date('Y');
+
+        $ruangan = $this->ruangan()->with('lokasi')->first();
+        $jenisBarang = $this->jenisBarang()->with('klasifikasi')->first();
+
+        if (!$ruangan || !$jenisBarang) return;
+
+        $klasifikasiCode = str_pad($jenisBarang->klasifikasi->kode_klasifikasi ?? '00', 2, '0', STR_PAD_LEFT);
+        $jenisCode = str_pad($jenisBarang->kode_jenis ?? '00', 2, '0', STR_PAD_LEFT);
+        $jumlahCode = str_pad($this->jumlah, 3, '0', STR_PAD_LEFT);
+        $lokasiCode = $ruangan->lokasi->kode_lokasi ?? '0';
+        $ruanganCode = $ruangan->kode_ruangan ?? '0';
+
+        $this->nomor_seri_inventaris = "{$klasifikasiCode} {$jenisCode} {$jumlahCode} {$lokasiCode}.{$ruanganCode} {$oldSeq} {$oldMonth} {$oldYear}";
+        $this->saveQuietly();
     }
 }

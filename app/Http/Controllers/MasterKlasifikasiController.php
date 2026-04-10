@@ -20,8 +20,11 @@ class MasterKlasifikasiController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['nama_klasifikasi' => 'required|string|max:255']);
-        MasterKlasifikasi::create($request->only('nama_klasifikasi'));
+        $request->validate([
+            'kode_klasifikasi' => 'nullable|string|max:50|unique:master_klasifikasi,kode_klasifikasi',
+            'nama_klasifikasi' => 'required|string|max:255'
+        ]);
+        MasterKlasifikasi::create($request->only('kode_klasifikasi', 'nama_klasifikasi'));
         return redirect()->route('master.klasifikasi.index')->with('success', 'Klasifikasi berhasil ditambahkan.');
     }
 
@@ -32,8 +35,11 @@ class MasterKlasifikasiController extends Controller
 
     public function update(Request $request, MasterKlasifikasi $klasifikasi)
     {
-        $request->validate(['nama_klasifikasi' => 'required|string|max:255']);
-        $klasifikasi->update($request->only('nama_klasifikasi'));
+        $request->validate([
+            'kode_klasifikasi' => 'nullable|string|max:50|unique:master_klasifikasi,kode_klasifikasi,' . $klasifikasi->id,
+            'nama_klasifikasi' => 'required|string|max:255'
+        ]);
+        $klasifikasi->update($request->only('kode_klasifikasi', 'nama_klasifikasi'));
         return redirect()->route('master.klasifikasi.index')->with('success', 'Klasifikasi berhasil diperbarui.');
     }
 

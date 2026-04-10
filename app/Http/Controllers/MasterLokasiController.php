@@ -20,8 +20,11 @@ class MasterLokasiController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['nama_lokasi' => 'required|string|max:255']);
-        MasterLokasi::create($request->only('nama_lokasi'));
+        $request->validate([
+            'kode_lokasi' => 'required|string|max:50|unique:master_lokasi,kode_lokasi',
+            'nama_lokasi' => 'required|string|max:255'
+        ]);
+        MasterLokasi::create($request->only('kode_lokasi', 'nama_lokasi'));
         return redirect()->route('master.lokasi.index')->with('success', 'Lokasi berhasil ditambahkan.');
     }
 
@@ -32,8 +35,11 @@ class MasterLokasiController extends Controller
 
     public function update(Request $request, MasterLokasi $lokasi)
     {
-        $request->validate(['nama_lokasi' => 'required|string|max:255']);
-        $lokasi->update($request->only('nama_lokasi'));
+        $request->validate([
+            'kode_lokasi' => 'required|string|max:50|unique:master_lokasi,kode_lokasi,' . $lokasi->id,
+            'nama_lokasi' => 'required|string|max:255'
+        ]);
+        $lokasi->update($request->only('kode_lokasi', 'nama_lokasi'));
         return redirect()->route('master.lokasi.index')->with('success', 'Lokasi berhasil diperbarui.');
     }
 
